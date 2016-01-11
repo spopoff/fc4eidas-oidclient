@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+	<comment>SWModule encrypt with JKS.</comment>
+	<entry key="keyStorePassword">local-demo</entry>
+	<entry key="keyPassword">local-demo</entry>
+    <entry key="keystoreType">JKS</entry>
+
+    <!-- Management of the encryption activation -->
+    <entry key="encryptionActivation">/home/SPOPOFF/configEidas/tomcat/encryptionConf.xml</entry>
+
+
+    <!--  If not present then no encryption will be applied on response -->
+    <entry key="keystorePath">/home/SPOPOFF/configEidas/keystore/eidasKeyStore_IDP_CC.jks</entry>
+    <entry key="responseToPointIssuer.CB">CN=cpeps-cb-demo-certificate, OU=STORK, O=CPEPS, L=EU, ST=EU, C=CB</entry>
+    <entry key="responseToPointSerialNumber.CB">54C8F9CD</entry>
+    
+	<!--  If not present then no decryption will be applied on response -->
+    <entry key="responseDecryptionIssuer">CN=idp-cc-demo-certification, OU=STORK, O=IDP, L=EU, ST=EU, C=CC</entry>
+    <entry key="serialNumber">54C8fAAE</entry>
+
+
+</properties>
