@@ -19,11 +19,23 @@ import org.slf4j.LoggerFactory;
  */
 public class FcTranslateAttr {
     private final String trans = "{\"sub\":\"PersonIdentifier\",\"given_name\":\"CurrentGivenName\",\"family_name\":\"CurrentFamilyName\",\"gender\":\"gender\",\"birthdate\":\"DateOfBirth\",\"birthplace\":\"countryCodeOfBirth\",\"birthcountry\":\"nationalityCode\",\"email\":\"eMail\",\"address\":\"residenceAddress\"}";
+    //"address":{"formatted":"26 rue Desaix, 75015 Paris","street_address":"26 rue Desaix","locality":"Paris","region":"Ile-de-France","postal_code":"75015","country":"France"}
+    //<eidas:LocatorDesignator>22</eidas:LocatorDesignator>
+    //<eidas:Thoroughfare>Arcacia Avenue</eidas:Thoroughfare>
+    //<eidas:PostName>London</eidas:PostName>
+    //<eidas:PostCode>SW1A 1AA</eidas:Postcode>
+    private final String transAddress = "{\"formatted\":\"LocatorDesignator\",\"street_address\":\"Thoroughfare\",\"locality\":\"PostName\",\"region\":\"AdminunitSecondLine\",\"postal_code\":\"PostCode\",\"country\":\"AdminunitFirstLine\"}";
     private boolean isErr = false;
     private String msgErr = "";
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(FcTranslateAttr.class);
     private final Map<String, String> transfo = new HashMap<String, String>();
+    private final Map<String, String> transfoAddress = new HashMap<String, String>();
     public FcTranslateAttr(){
+        translateAttr(trans, transfo);
+        translateAttr(transAddress, transfoAddress);
+        
+    }
+    private void translateAttr(String trans, Map<String,String>transfo){
         JSONTokener jsTok = null;
         try {
             jsTok = new JSONTokener(trans);
@@ -79,5 +91,8 @@ public class FcTranslateAttr {
     }
     public String getTransfoName(String avant){
         return transfo.get(avant);
+    }
+    public String getTransfoAddress(String avant){
+        return transfoAddress.get(avant);
     }
 }
