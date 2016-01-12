@@ -83,6 +83,8 @@ public class CallBack extends HttpServlet {
                 return;
             }
         }
+        //on ferme la session OAuth
+        frConn.closeClient();
         LOG.debug("commence ProcessLogin");
         ProcessLogin pl = new ProcessLogin();
         pl.setEncryptAssertion(encryptAssertion);

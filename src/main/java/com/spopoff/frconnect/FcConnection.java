@@ -18,39 +18,37 @@ import org.slf4j.LoggerFactory;
 public class FcConnection {
 	
     private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(FcConnection.class.getName());
-
-    
     FcParamConfig configuration;
+    private final OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 
     public FcConnection(FcParamConfig configuration) {
-            super();
-            this.configuration = configuration;
+        super();
+        this.configuration = configuration;
     }
-
 
     public URI getRedirectUri() throws FcConnectException{
 
-            try {
-                    OAuthClientRequest request = OAuthClientRequest
-                                            .authorizationLocation(configuration.getAuthorizationUri())
-                                       .setClientId(configuration.getClientId())
-                                       .setRedirectURI(configuration.getRedirectUri())
-                                       .setResponseType(ResponseType.CODE.toString())
-                                       .setScope(configuration.getScope())
-                                       .setState(configuration.getState())
-                                       .setParameter("nonce", configuration.getNonce())
-                                       .setParameter(configuration.getVerifParameterId(), configuration.getVerifParameterValue())
-                                       .buildQueryMessage();
+        try {
+            OAuthClientRequest request = OAuthClientRequest
+               .authorizationLocation(configuration.getAuthorizationUri())
+               .setClientId(configuration.getClientId())
+               .setRedirectURI(configuration.getRedirectUri())
+               .setResponseType(ResponseType.CODE.toString())
+               .setScope(configuration.getScope())
+               .setState(configuration.getState())
+               .setParameter("nonce", configuration.getNonce())
+               .setParameter(configuration.getVerifParameterId(), configuration.getVerifParameterValue())
+               .buildQueryMessage();
 
-                    LOG.debug(request.getLocationUri());
+            LOG.debug(request.getLocationUri());
 
-            return new URI(request.getLocationUri());
+        return new URI(request.getLocationUri());
 
-            } catch (OAuthSystemException e) {
-                    throw new FcConnectException(e);
-            } catch (URISyntaxException e) {
-                    throw new FcConnectException("The uri is not well formed", e);
-            }
+        } catch (OAuthSystemException e) {
+                throw new FcConnectException(e);
+        } catch (URISyntaxException e) {
+                throw new FcConnectException("The uri is not well formed", e);
+        }
 
     }
 
@@ -71,10 +69,10 @@ public class FcConnection {
             authClientRequest.setLocationUri(configuration.getTokenUri());
             LOG.debug( "authClientRequest.body="+authClientRequest.getBody());
             LOG.debug( "authClientRequest.getLocationUri="+authClientRequest.getLocationUri());
-            OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
             OAuthJSONAccessTokenResponse tokResp = oAuthClient.accessToken(authClientRequest);
             LOG.debug( "OAuthJSONAccessTokenResponse="+tokResp.toString());
-            return tokResp.getAccessToken();
+            String ret = tokResp.getAccessToken();
+            return ret;
 
         } catch (OAuthSystemException e) {
                 throw new FcConnectException("Error during request for accessToken : ", e);
@@ -85,7 +83,6 @@ public class FcConnection {
 
     public String getUserInfo(String accessToken) throws FcConnectException{
 		
-        OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 
         //récupération du profil client
         OAuthClientRequest bearerClientRequest;
@@ -123,5 +120,12 @@ public class FcConnection {
         String ret = "";
         ret += configuration.getLogoutUri()+"?id_token="+idToken+"&state="+state+"&post_logout_redirect_uri="+backUri;
         return ret;
+    }
+    public void closeClient(){
+        try {
+            oAuthClient.shutdown();
+        } catch (Exception e) {
+            LOG.error("Erreur fermeture clientHttpOAuth "+e);
+        }
     }
 }
