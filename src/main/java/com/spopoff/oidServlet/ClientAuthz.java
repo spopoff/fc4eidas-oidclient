@@ -46,14 +46,13 @@ public class ClientAuthz extends HttpServlet {
         } catch (Exception e) {
             LOG.warn( "en direct", e);
         }
-        if(samlToken == null || signAssertion == null || encryptAssertion == null){
-            signAssertion = java.util.UUID.randomUUID().toString();
-            encryptAssertion = java.util.UUID.randomUUID().toString();
-        }
+        String nonce = java.util.UUID.randomUUID().toString();
+        LOG.debug("encryptAssertion="+encryptAssertion);
         HttpSession session = request.getSession(true);
-        session.setAttribute("state", signAssertion);
+        session.setAttribute("signAssertion", signAssertion);
         session.setAttribute("nonce", encryptAssertion);
         session.setAttribute("samlToken", samlToken);
+        String sessId = session.getId();
         /*
         String tokenUri, 
         String authorizationUri, 
@@ -62,14 +61,17 @@ public class ClientAuthz extends HttpServlet {
         String clientId, 
         String clientSecret,
         String scope,
-        String state, String verifParameterId, String verifParameterValue
+        String state,
+        String nonce,
+        String verifParameterId,
+        String verifParameterValue
         */
         FcParamConfig frConf = new FcParamConfig(FrConn.getUrlToken(),FrConn.getUrlAuthz(),
             FrConn.getUrlRedir(), FrConn.getUrlUserI(),FrConn.getCle(), FrConn.getSecret(),
-            FrConn.getScope(),signAssertion,
-            encryptAssertion,"acr_values","eidas2", FrConn.getUrlLogout());
+            FrConn.getScope(),sessId,
+            nonce,"acr_values","eidas2", FrConn.getUrlLogout());
         FcConnection frConn = new FcConnection(frConf);
-        LOG.debug("Avant la redirection pour demande accessToken");
+        LOG.debug("Avant la redirection pour demande accessToken state="+frConf.getState()+" nonce="+nonce);
         try {
             response.sendRedirect(frConn.getRedirectUri().toString());
         } catch (FcConnectException ex) {

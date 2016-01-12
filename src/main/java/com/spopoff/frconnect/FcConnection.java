@@ -121,6 +121,9 @@ public class FcConnection {
         ret += configuration.getLogoutUri()+"?id_token="+idToken+"&state="+state+"&post_logout_redirect_uri="+backUri;
         return ret;
     }
+    /**
+     * termine le client OAuth
+     */
     public void closeClient(){
         try {
             oAuthClient.shutdown();

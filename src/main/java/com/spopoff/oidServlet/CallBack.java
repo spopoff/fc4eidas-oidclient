@@ -38,22 +38,24 @@ public class CallBack extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if(!once) return;
+        if(!once){ 
+            LOG.debug("premier accès dans la servlet="+once);
+        }
         HttpSession session = request.getSession(false);
-	String signAssertion = (String) session.getAttribute("state");
+	String signAssertion = (String) session.getAttribute("signAssertion");
 	String encryptAssertion = (String) session.getAttribute("nonce");
 	String samlToken = (String) session.getAttribute("samlToken");
-
-
+        String sessId = session.getId();
+        String nonce = java.util.UUID.randomUUID().toString();
         FcParamConfig frConf = new FcParamConfig(FrConn.getUrlToken(),FrConn.getUrlAuthz(),
             FrConn.getUrlRedir(),FrConn.getUrlUserI(), FrConn.getCle(), FrConn.getSecret(),
-            FrConn.getScope(),signAssertion,
-            encryptAssertion,"acr_values","eidas2", FrConn.getUrlLogout());
+            FrConn.getScope(),sessId,
+            nonce,"acr_values","eidas2", FrConn.getUrlLogout());
         FcConnection frConn = new FcConnection(frConf);
         String accesTok = "";
         String code = "";
         String state = request.getParameter("state");
-        if(!signAssertion.equalsIgnoreCase(state)){
+        if(!sessId.equalsIgnoreCase(state)){
             LOG.error("state different!");
             sendError(response, "state different!");
             return;
