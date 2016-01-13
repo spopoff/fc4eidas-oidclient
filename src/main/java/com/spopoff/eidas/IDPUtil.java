@@ -45,6 +45,8 @@ public class IDPUtil {
      * name of the property which switches idp metadata on and off
      */
     public static final String ACTIVE_METADATA_CHECK="idp.metadata.check";
+    public static final String OID_TRANS="idp.oidclient.trans";
+    public static final String OID_TRANS_ADDRESS="idp.oidclient.transAddress";
     private static final Logger logger = Logger.getLogger(IDPUtil.class.getName());
 
     private static final String SAML_ENGINE_LOCATION_VAR="IDP_CONF_LOCATION";

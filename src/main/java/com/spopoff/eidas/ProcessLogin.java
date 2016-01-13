@@ -98,6 +98,9 @@ public class ProcessLogin {
 
         EIDASUtil.createInstance(loadConfigs("eidasUtil.properties"));
         FcTranslateAttr transfo = new FcTranslateAttr();
+        transfo.setTrans(idpProperties.getProperty(IDPUtil.OID_TRANS));
+        transfo.setTransAddress(idpProperties.getProperty(IDPUtil.OID_TRANS_ADDRESS));
+        transfo.init();
         if(transfo.isIsErr()){
             LOG.error("erreur transformateur="+transfo.getMsgErr());
             return false;
@@ -305,6 +308,9 @@ public class ProcessLogin {
                 //si pas un objet de json mais un simple champs
                 if (!isJsonObj) {
                     jsVal = jsObj.getString(key);
+                    if(key.equalsIgnoreCase("gender")){
+                        jsVal = transfo.normalizeGender(jsVal);
+                    }
                     tmp.add(jsVal);
                     LOG.info("[processLogin] Attribut1: " + key + "=>" + jsVal);
                     pa.setValue(tmp);

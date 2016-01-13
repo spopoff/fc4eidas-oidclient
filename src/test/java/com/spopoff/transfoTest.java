@@ -45,6 +45,7 @@ public class transfoTest {
      @Test
      public void hello() {
         FcTranslateAttr transfo = new FcTranslateAttr();
+        transfo.init();
         if(transfo.isIsErr()){
             Assert.assertFalse(transfo.isIsErr());
         }
