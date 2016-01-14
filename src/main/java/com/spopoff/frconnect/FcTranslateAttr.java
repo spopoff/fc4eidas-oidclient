@@ -134,12 +134,13 @@ public class FcTranslateAttr {
         this.transAddress = transAddress;
     }
     public String normalizeGender(String avant){
-        String ret = "U";
+        // '[Male, Female, Unspecified]'.
+        String ret = "Unspecified";
         if(avant.equalsIgnoreCase("male")||avant.equalsIgnoreCase("m")){
-            ret = "M";
+            ret = "Male";
         }
         if(avant.equalsIgnoreCase("female")||avant.equalsIgnoreCase("f")){
-            ret = "F";
+            ret = "Female";
         }
         return ret;
     }
